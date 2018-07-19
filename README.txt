@@ -1,3 +1,3 @@
-A Pen created at CodePen.io. You can find this one at https://codepen.io/martyav/pen/ajZEGw.
+A React app that dynamically counts words, characters, or fucks as you type.
 
  
