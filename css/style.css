@@ -1,0 +1,15 @@
+.TextInput {
+  display: block;
+  min-height: 200px;
+  min-width: 494px;
+  font-size: 16px;
+}
+
+.Reset {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  min-height: 44px;
+  min-width: 500px;
+  font-size: 16px;
+}

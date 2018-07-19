@@ -1,0 +1,171 @@
+class TextBox extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            textBoxContents: "",
+            count: 0,
+            options: "words"
+        }
+        
+        this.handleRadioSelection = this.handleRadioSelection.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.handleClearButtonClick = this.handleClearButtonClick.bind(this);
+    }
+    
+    countCharacters(text) {
+        return text.length;
+    }
+    
+    countWords(text) {
+        return text.trim().split(" ").length;
+    }
+    
+    countInstancesOfAString(text, match) {        
+        return text.trim().toLowerCase().split(" ").filter(word => word.includes(match)).length;
+    }
+    
+    countMethod(text, option) {
+        let newCountMethod;
+        option = option.toLowerCase();
+        
+        if (option === "words") {
+            if (text === "") {
+                return 0; // JS is counting the empty string as a single word
+            }
+            
+            newCountMethod = this.countWords;
+        } else if (option === "characters") {
+            newCountMethod = this.countCharacters;
+        } else if (option === "instances") {
+            newCountMethod = this.countInstancesOfAString;
+            return newCountMethod(text, "fuck");
+        }
+        
+        return newCountMethod(text);
+    }
+    
+    handleRadioSelection(event) {
+        let selected = event.target.value;
+        console.log(selected)
+        let newCount = this.countMethod(this.state.textBoxContents, selected);
+        
+        this.setState({
+            options: selected,
+            count: newCount,
+        });
+    }
+    
+    handleFormChange(event) {
+        event.preventDefault();
+        
+        let newContents = event.target.value;
+        let newCount = this.countMethod(newContents, this.state.options);
+        
+        this.setState({
+            textBoxContents: newContents,
+            count: newCount,
+        });
+    }
+    
+    handleClearButtonClick(event) {
+        event.preventDefault();
+        
+        this.clearText();
+    }
+    
+    clearText() {
+        let element = this.refs["TextInput"];
+        
+        element.value = "";
+        element.placeholder = "";
+        
+         this.setState({
+            textBoxContents: "",
+             count: 0,
+        });     
+    }
+    
+    renderRadio(value) {
+        return (
+            <input 
+                type = "radio"
+                name = "options"
+                value = {value.toLowerCase()}
+                onChange = {this.handleRadioSelection}
+                checked = {this.state.options === value.toLowerCase()}
+            />
+        );
+    }
+    
+    renderCount() {
+        if (this.state.options === "characters") {
+            return (
+                <section className = "Count">
+                    <p>
+                        Number of characters: {this.state.count}
+                    </p>
+                </section>
+            );
+        } else if (this.state.options === "words") {
+            return (
+                <section className = "Count">
+                    <p>
+                        Number of words: {this.state.count}
+                    </p>
+                </section>
+            );
+        } else if (this.state.options === "instances") {
+            return (
+                <section className = "Count">
+                    <p>
+                        Number of fucks given: {this.state.count}
+                    </p>
+                </section>
+            );
+        }
+    }
+    
+    render() {
+        return (
+            <div>
+            <section className = "UserText">
+                <form>
+                    <section className = "Options"> 
+                        {this.renderRadio("Words")} Words 
+                        {this.renderRadio("Characters")} Characters
+                        {this.renderRadio("Instances")} Fucks
+                    </section>
+                    <textarea
+                        className = "TextInput"
+                        ref = "TextInput"
+                        type = "text"
+                        onChange = {this.handleFormChange}
+                        placeholder = "Type here"
+                    />
+                    <button
+                        className = "Reset"
+                        type = "reset"
+                        onClick = {this.handleClearButtonClick}
+                    >
+                    Clear Textbox
+                    </button>
+                </form>
+            </section>
+            {this.renderCount()}
+            </div>
+        );
+    }
+}
+
+function App() {
+  return (
+    <div className="App">
+          <h1>Word & Character Count</h1>
+          <TextBox />
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
